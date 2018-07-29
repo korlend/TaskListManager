@@ -1,0 +1,10 @@
+.header {
+  background-color: #222;
+  line-height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.centered {
+    vertical-align: middle;
+}
