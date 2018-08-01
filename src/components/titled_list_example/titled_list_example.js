@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import "./titled_list_example.css";
-import Titledlist from "components/titled_list/titled_list";
+import { TitledList, OperationType, ListChangedEvent } from "components/titled_list/titled_list";
+import { Paper, Button } from '@material-ui/core';
 import { TitledListModel } from "components/titled_list/titled_list.model";
-import { Paper } from '@material-ui/core';
+
+const storage_list_id = 'titled_list';
 
 class TitledListExample extends Component {
   constructor(props) {
@@ -11,26 +13,26 @@ class TitledListExample extends Component {
   }
 
   getInitialState = () => {
-    const state = { list: [] };
-    for (let i = 0; i < 10; i++) {
-      state.list.push(new TitledListModel("My Title Number " + i));
+    const list: Array<TitledListModel> = JSON.parse(localStorage.getItem(storage_list_id));
+    const titledList = [];
+    for (let row of list) {
+      titledList.push(new TitledListModel(row.title, row.description));
     }
+    const state = { list: list ? titledList : [] };
     this.state = state;
   };
 
-  deleteRecord = record => {
-    this.setState(state => {
-      state.list = state.list.filter(v => v !== record);
-      return state;
-    });
-  };
+  listChangedEvent = (event: ListChangedEvent) => {
+    console.log(event);
+    localStorage.setItem(storage_list_id, JSON.stringify(event.list));
+  }
 
   render() {
     return (
       <Paper className="titled_list_example">
-        <Titledlist
+        <TitledList
           list={this.state.list}
-          deleteRecordEvent={this.deleteRecord}
+          listChangedEvent={this.listChangedEvent}
         />
       </Paper>
     );

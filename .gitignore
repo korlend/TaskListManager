@@ -1,5 +1,8 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
+# idea
+.idea/*
+
 # npm
 package-lock.json
 
@@ -8,6 +11,7 @@ package-lock.json
 
 # testing
 /coverage
+.nyc_output/*
 
 # production
 /build
