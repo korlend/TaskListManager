@@ -6,7 +6,7 @@ import {
   IconButton,
   ListItem,
   ListItemSecondaryAction,
-  Divider
+  Divider,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 
@@ -19,7 +19,7 @@ class TitledListLine extends Component {
   deleteRecord = () => {
     console.log(this);
     this.props.deleteRecordEvent(this.props.value);
-  }
+  };
 
   render() {
     return (

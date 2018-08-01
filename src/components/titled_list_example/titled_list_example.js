@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./titled_list_example.css";
 import Titledlist from "components/titled_list/titled_list";
 import { TitledListModel } from "components/titled_list/titled_list.model";
+import { Paper } from '@material-ui/core';
 
 class TitledListExample extends Component {
   constructor(props) {
@@ -26,12 +27,12 @@ class TitledListExample extends Component {
 
   render() {
     return (
-      <div className="titled_list_example">
+      <Paper className="titled_list_example">
         <Titledlist
           list={this.state.list}
           deleteRecordEvent={this.deleteRecord}
         />
-      </div>
+      </Paper>
     );
   }
 }
