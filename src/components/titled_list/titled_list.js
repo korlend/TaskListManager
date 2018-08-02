@@ -16,6 +16,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import DoneIcon from "@material-ui/icons/Done";
 import EditIcon from "@material-ui/icons/Edit";
 import CancelIcon from "@material-ui/icons/Cancel";
+import SortIcon from "@material-ui/icons/Sort";
 
 const INSERT = 0; const UPDATE = 1; const DELETE = 2;
 export class OperationType {
@@ -30,7 +31,7 @@ export class OperationType {
   }
 }
 
-const ASCENDING = 0; const DESCENDING = 1;
+const ASCENDING = 0; const DESCENDING = 1; const SORTING_OFF = 2;
 class SortTypes {
   static get ASCENDING() {
     return ASCENDING;
@@ -38,6 +39,25 @@ class SortTypes {
   static get DESCENDING() {
     return DESCENDING;
   }
+  static get SORTING_OFF() {
+    return SORTING_OFF;
+  }
+  static getNext(type) {
+    if (type === SortTypes.ASCENDING) {
+      return SortTypes.DESCENDING;
+    } else if (type === SortTypes.DESCENDING) {
+      return SortTypes.SORTING_OFF;
+    } else {
+      return SortTypes.ASCENDING;
+    }
+  }
+  static getInitial() {
+    return SortTypes.ASCENDING;
+  }
+}
+
+const scaleSort = {
+  transform: 'scaleY(-1)'
 }
 
 export class ListChangedEvent {
@@ -58,7 +78,7 @@ export class TitledList extends React.Component {
 
   getInitialState = () => {
     const state = {
-      sorting: { sortBy: '', sortIn: SortTypes.ASCENDING },
+      sorting: { sortBy: '', sortIn: SortTypes.getInitial() },
       list: this.props.list
     };
     this.state = state;
@@ -105,6 +125,36 @@ export class TitledList extends React.Component {
     if (this.props.listChangedEvent) {
       this.props.listChangedEvent(new ListChangedEvent(list, type));
     }
+  }
+
+  sort = (field: string) => {
+    this.setState((state) => {
+      if (state.sorting.sortBy !== field) {
+        state.sorting.sortIn = SortTypes.getInitial();
+      } else {
+        state.sorting.sortIn = SortTypes.getNext(state.sorting.sortIn);
+      }
+      state.sorting.sortBy = field;
+      return state;
+    });
+  }
+
+  getSortStyle = (forSort) => {
+    if (this.state.sorting.sortBy === forSort) {
+      if (this.state.sorting.sortIn === SortTypes.DESCENDING) {
+        return scaleSort;
+      }
+    }
+    return {};
+  }
+
+  getSortColor = (forSort) => {
+    if (this.state.sorting.sortBy === forSort) {
+      if (this.state.sorting.sortIn !== SortTypes.SORTING_OFF) {
+        return 'primary';
+      }
+    }
+    return 'default';
   }
 
   getInEditTableRow = (row, key) => {
@@ -157,11 +207,17 @@ export class TitledList extends React.Component {
   }
 
   iterateList = () => {
-    const list = this.state.list;
+    let list = [...this.state.list];
     const jsxList = [];
     const sort = this.state.sorting;
-    if (sort && sort.sortBy) {
-      // TODO: add list sorting before output
+    if (sort && sort.sortBy && sort.sortIn !== SortTypes.SORTING_OFF) {
+      list = list.sort((a, b) => {
+        if (sort.sortIn === SortTypes.ASCENDING) {
+          return a[sort.sortBy].localeCompare(b[sort.sortBy]);
+        } else {
+          return b[sort.sortBy].localeCompare(a[sort.sortBy]);
+        }
+      });
     }
     list.map((n, i) => {
       const row = n._inEdit ? this.getInEditTableRow(n, i) : this.getTableRow(n, i);
@@ -180,8 +236,18 @@ export class TitledList extends React.Component {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Title</TableCell>
-                <TableCell>Description</TableCell>
+                <TableCell>
+                  Title
+                  <IconButton style={this.getSortStyle('title')} color={this.getSortColor('title')} onClick={() => this.sort('title')}>
+                    <SortIcon />
+                  </IconButton>
+                </TableCell>
+                <TableCell>
+                  Description
+                  <IconButton style={this.getSortStyle('description')} color={this.getSortColor('description')} onClick={() => this.sort('description')}>
+                    <SortIcon />
+                  </IconButton>
+                </TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
