@@ -1,10 +1,14 @@
 import React, { Component } from "react";
 import "./titled_list_example.css";
-import { TitledList, OperationType, ListChangedEvent } from "components/titled_list/titled_list";
-import { Paper, Button } from '@material-ui/core';
+import {
+  TitledList,
+  OperationType,
+  ListChangedEvent
+} from "components/titled_list/titled_list";
+import { Paper, Button } from "@material-ui/core";
 import { TitledListModel } from "components/titled_list/titled_list.model";
 
-const storage_list_id = 'titled_list';
+const storage_list_id = "titled_list";
 
 class TitledListExample extends Component {
   constructor(props) {
@@ -13,11 +17,16 @@ class TitledListExample extends Component {
   }
 
   getInitialState = () => {
-    const list: Array<TitledListModel> = JSON.parse(localStorage.getItem(storage_list_id));
-    const titledList = [];
-    for (let row of list) {
-      titledList.push(new TitledListModel(row.title, row.description));
+    let list: Array<TitledListModel> = JSON.parse(
+      localStorage.getItem(storage_list_id)
+    );
+    if (!list) {
+      list = [];
     }
+    const titledList = [];
+    list.map(row => {
+      titledList.push(new TitledListModel(row.title, row.description));
+    });
     const state = { list: list ? titledList : [] };
     this.state = state;
   };
@@ -25,7 +34,7 @@ class TitledListExample extends Component {
   listChangedEvent = (event: ListChangedEvent) => {
     console.log(event);
     localStorage.setItem(storage_list_id, JSON.stringify(event.list));
-  }
+  };
 
   render() {
     return (
