@@ -23,3 +23,7 @@ Non-Functional Requirements:
 * This task should take no more than 6-8 working hours(it is better to be less). 
 
 * Additional plus if test task will be presented as git repository with history of changes. it could be located on github(preffered) or folder with .git metadata.
+
+## Results
+
+![](https://github.com/korlend/TaskListManager/blob/master/tasklistmanager.gif)
